@@ -14,8 +14,7 @@ jobs:
     - name: Read HTML file
       id: html
       run: |
-        content=`cat helloworld.html`
-        echo "::set-output name=content::$content"
+        echo "content=$(cat helloworld.txt)" >> $GITHUB_OUTPUT
       shell: bash
 
     - name: Create check run
@@ -23,11 +22,11 @@ jobs:
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
-          const output = `The content of the HTML file is:\n\n${{steps.html.outputs.content}}`
+          const output = `The content of the text file is:\n\n${{steps.html.outputs.content}}`
           await github.rest.checks.create({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            name: 'HTML File Check',
+            name: 'Text File Check',
             head_sha: context.sha,
             status: 'completed',
             conclusion: 'success',
