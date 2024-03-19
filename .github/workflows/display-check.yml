@@ -1,0 +1,39 @@
+name: Display Check
+
+on:
+  workflow_dispatch:
+
+jobs:
+  display_html:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.1.2
+
+    - name: Read HTML file
+      id: html
+      run: |
+        content=`cat helloworld.html`
+        echo "::set-output name=content::$content"
+      shell: bash
+
+    - name: Create check run
+      uses: actions/github-script@v7.0.1
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          const output = `The content of the HTML file is:\n\n${{steps.html.outputs.content}}`
+          await github.checks.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            name: 'HTML File Check',
+            head_sha: context.sha,
+            status: 'completed',
+            conclusion: 'success',
+            output: {
+              title: 'HTML File Content',
+              summary: 'The content of the HTML file is displayed below.',
+              text: output
+            }
+          })
