@@ -24,7 +24,7 @@ jobs:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
           const output = `The content of the HTML file is:\n\n${{steps.html.outputs.content}}`
-          await github.checks.create({
+          await github.rest.checks.create({
             owner: context.repo.owner,
             repo: context.repo.repo,
             name: 'HTML File Check',
